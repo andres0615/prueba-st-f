@@ -9,6 +9,10 @@ import { CategoryLayoutComponent } from './category/category-layout/category-lay
 import { CategoryListComponent } from './category/category-list/category-list.component';
 import { CategoryCreateComponent } from './category/category-create/category-create.component';
 import { CategoryEditComponent } from './category/category-edit/category-edit.component';
+import { SubcategoryLayoutComponent } from './subcategory/subcategory-layout/subcategory-layout.component';
+import { SubcategoryListComponent } from './subcategory/subcategory-list/subcategory-list.component';
+import { SubcategoryCreateComponent } from './subcategory/subcategory-create/subcategory-create.component';
+import { SubcategoryEditComponent } from './subcategory/subcategory-edit/subcategory-edit.component';
 
 export const routes: Routes = [
     // { path: 'users', component: UserComponent },
@@ -30,6 +34,15 @@ export const routes: Routes = [
             { path: '', component: CategoryListComponent },
             { path: 'create', component: CategoryCreateComponent },
             { path: 'edit/:id', component: CategoryEditComponent },
+        ]
+    },
+    { 
+        path: 'subcategory', 
+        component: SubcategoryLayoutComponent,
+        children: [
+            { path: '', component: SubcategoryListComponent },
+            { path: 'create', component: SubcategoryCreateComponent },
+            { path: 'edit/:id', component: SubcategoryEditComponent },
         ]
     },
 ];
