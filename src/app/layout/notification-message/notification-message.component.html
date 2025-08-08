@@ -1,8 +1,8 @@
 
 <div 
   *ngIf="notificationService.notification().visible"
-  class="fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 cursor-pointer"
+  class="fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 cursor-pointer whitespace-pre-wrap"
   [class]="getClassByType(notificationService.notification().type)"
-  (click)="hideNotification()">
+  (click)="hideNotification()"> 
   {{ notificationService.notification().message }}
 </div>

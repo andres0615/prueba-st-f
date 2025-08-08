@@ -3,36 +3,72 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, ValidatorFn, A
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { NotificationMessageService } from '../../services/notification-message.service';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-user-create',
+  selector: 'app-user-edit',
   standalone: true,
   imports: [
     ReactiveFormsModule, 
     CommonModule, 
     RouterLink
   ],
-  templateUrl: './user-create.component.html',
-  styleUrl: './user-create.component.css'
+  templateUrl: './user-edit.component.html',
+  styleUrl: './user-edit.component.css'
 })
-export class UserCreateComponent {
+export class UserEditComponent {
   userForm: FormGroup;
   isLoading = false;
+  id: string | null = null; // Define la propiedad id
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private notificationService: NotificationMessageService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required]],
-      confirmPassword: ['', [Validators.required]],
+      password: [''],
+      confirmPassword: [''],
       rol: ['', [Validators.required]],
       state: [true]
     }, { validators: passwordMatchValidator() });
+  }
+
+  ngOnInit(): void {
+    // Obtener el ID de la ruta
+    this.id = this.route.snapshot.paramMap.get('id');
+    console.log('ngoninit');
+
+    this.showUser();
+    
+    // Si existe ID, cargar datos del usuario
+    // if (this.id) {
+    //   this.loadUserData(this.id);
+    // }
+  }
+
+  showUser() {
+    this.userService.showUser(this.id).subscribe({
+      next: (response) => {
+        let { data, message, success } = response;
+        console.log(response);
+
+        let userData = data.user;
+
+        this.userForm.patchValue({
+          username: userData.username,
+          rol: userData.rol,
+          state: userData.state === 1 // Convertir a boolean
+          // Nota: No cargamos las contraseñas por seguridad
+        });
+      },
+      error: (error) => {
+        this.notificationService.showError(error.message);
+      },
+    });
   }
 
   onSubmit() {
@@ -48,9 +84,9 @@ export class UserCreateComponent {
         state: this.userForm.value.state ? 1 : 0
       };
 
-      this.userService.createUser(userData).subscribe({
+      this.userService.updateUser(this.id, userData).subscribe({
         next: (response) => {
-          console.log('Usuario creado exitosamente:', response);
+          console.log('Usuario actualizado exitosamente:', response);
           this.isLoading = false;
           // Aquí puedes agregar lógica adicional como redirigir o mostrar mensaje
           // window.location.href = 'users-list.html';
@@ -60,7 +96,7 @@ export class UserCreateComponent {
           this.router.navigate(['/user']);
         },
         error: (error) => {
-          console.error('Error al crear usuario:', error);
+          console.error('Error al actualizar el usuario:', error);
           this.isLoading = false;
           // Aquí puedes manejar errores
           this.notificationService.showError(error.message);
@@ -97,7 +133,7 @@ export class UserCreateComponent {
     console.log('this.userForm', this.userForm);
     
     // Verificar error de contraseñas no coinciden
-    if (this.userForm.errors?.['passwordMismatch']) {
+                        if (this.userForm.errors?.['passwordMismatch']) {
       console.log('Las contraseñas no coinciden');
       errorMessages += 'Las contraseñas no coinciden' + ' \n';
       // this.notificationService.showError('Las contraseñas no coinciden');
@@ -110,7 +146,7 @@ export class UserCreateComponent {
     if (errorMessages) {
       this.notificationService.showError(errorMessages);
     }
-  }
+  } 
 }
 
 export function passwordMatchValidator(): ValidatorFn {
