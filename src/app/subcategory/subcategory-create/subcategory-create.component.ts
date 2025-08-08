@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { SubcategoryService } from '../../services/subcategory.service';
+import { CategoryService } from '../../services/category.service';
 import { CommonModule } from '@angular/common';
 import { NotificationMessageService } from '../../services/notification-message.service';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
@@ -19,18 +20,24 @@ import { RouterOutlet, RouterLink, Router } from '@angular/router';
 export class SubcategoryCreateComponent {
   subcategoryForm: FormGroup;
   isLoading = false;
+  categories: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private subcategoryService: SubcategoryService,
+    private categoryService: CategoryService,
     private notificationService: NotificationMessageService,
     private router: Router
   ) {
     this.subcategoryForm = this.fb.group({
       name: ['', [Validators.required]],
       state: [true],
-      categoryId: [1],
+      categoryId: ['', [Validators.required]],
     });
+  }
+
+  ngOnInit(): void {
+    this.getCategories();
   }
 
   onSubmit() {
@@ -42,7 +49,7 @@ export class SubcategoryCreateComponent {
       const subcategoryData = {
         name: this.subcategoryForm.value.name,
         state: this.subcategoryForm.value.state ? 1 : 0,
-        category_id: 1
+        categoryId: this.subcategoryForm.value.categoryId,
       };
 
       this.subcategoryService.createSubcategory(subcategoryData).subscribe({
@@ -100,5 +107,17 @@ export class SubcategoryCreateComponent {
     if (errorMessages) {
       this.notificationService.showError(errorMessages);
     }
+  }
+
+  getCategories(){
+    this.categoryService.getCategories().subscribe({
+      next: (response) => {
+        let { data, message, success } = response;
+        this.categories = data.categories;
+      },
+      error: (error) => {
+        this.notificationService.showError(error.message);
+      }
+    });
   }
 }

@@ -1,1 +1,85 @@
-<p>subcategory-edit works!</p>
+<div class="p-6">
+    <!-- Page Title -->
+    <div class="mb-8 mx-auto max-w-4xl">
+        <h2 class="text-2rem font-light text-slate-800 mb-2">Editar Subcategoria</h2>
+        <p class="text-1rem text-slate-600">Modifica la información de la subcategoria seleccionado</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <form 
+        class="space-y-8" 
+        [formGroup]="subcategoryForm" 
+        (ngSubmit)="onSubmit()">
+            <!-- Credentials -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-1.25rem font-medium text-slate-800 mb-6">Informacion basica</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-0.875rem font-medium text-slate-700 mb-2">
+                            Nombre de la subcategoria *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="name"
+                            formControlName="name"
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="nombre_subcategoria"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label for="role" class="block text-0.875rem font-medium text-slate-700 mb-2">
+                            Categoria *
+                        </label>
+                        <select 
+                            id="rol"
+                            formControlName="categoryId"
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                        >
+                            <option value="">Selecciona una categoria</option>
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+
+            <!-- Account Status -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-1.25rem font-medium text-slate-800 mb-6">Estado de la Subcategoria</h3>
+                <div class="flex items-center">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" formControlName="state" id="state" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <span class="ml-3 text-0.875rem font-medium text-slate-700">Subcategoria activa</span>
+                    </label>
+                </div>
+                <p class="text-0.75rem text-slate-500 mt-2">
+                    
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-6">
+                <button 
+                    type="submit" 
+                    class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors text-1rem font-medium"
+                    [disabled]="isLoading"
+                >
+                    Guardar Subcategoria
+                </button>
+                <a 
+                    type="button" 
+                    routerLink="/subcategory"
+                    class="bg-slate-100 text-slate-700 px-8 py-3 rounded-xl hover:bg-slate-200 transition-colors text-1rem font-medium"
+                >
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
